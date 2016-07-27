@@ -1,0 +1,121 @@
+body {
+  font-family: sans-serif;
+}
+
+.title {
+  position: absolute;
+  top: 0.5em;
+  left: 1em;
+  margin:0;
+  text-transform: uppercase;
+}
+
+/* Full Screen */
+.drag, .drag-message {
+  position: absolute;
+  top: 1.5em;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.drag-message {
+  margin:1em;
+  border: 4px dashed rgba(76, 158, 217, 1);
+  text-align:center;
+  padding:10%;
+  color: rgba(76, 158, 217, 1);
+	opacity: 1;
+	transition: opacity 1000ms;
+}
+.dragging .drag-message {
+  opacity: 1;
+  transition: opacity 1000ms;
+  border: solid dashed rgba(0, 136, 204, 1);
+  background-color: rgba(0, 136, 204, 0.2);
+  pointer-events: none;
+}
+.has-chart .drag-message {
+  opacity: 0;
+}
+.drag-error {
+  opacity: 0;
+  transform: opacity 1000ms;
+  color: red;
+}
+.show.drag-error {
+  opacity: 1;
+}
+
+.chart-pie {
+  opacity: 0;
+  margin: 3em;
+	transition: opacity 1000ms;
+	position:relative;
+}
+.chart-pie-col {
+  flex: 1;
+}
+.chart-pie-svg {
+  padding:5%;
+}
+.chart-pie-chart {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+}
+.chart-pie-text {
+  font-size: 1.4em;
+  font-weight: normal;
+  fill: #fff;
+}
+.chart-pie-piece {
+  transition: 200ms transform, stroke-width 200ms;
+  transform: scale(1);
+}
+.chart-pie-piece.active {
+  transform: scale(1.04);
+  stroke-width: 5;
+}
+.chart-pie-legend-row {
+  line-height: 1.2;
+  border: 1px solid #ddd;
+  border-left: 0;
+  border-right: 0;
+  padding: 0.6em 0;
+  transform: scale(1);
+  transition: transform 200ms;
+  margin-bottom:-1px;
+  z-index:0;
+  position:relative
+}
+.chart-pie-legend-row.active {
+  transform: scale(1.03);
+  background: rgba(0,0,0,0.05);
+}
+.chart-pie-legend-color {
+  width: 1em;
+  height: 1em;
+  float: left;
+  margin-right: 0.4em;
+  box-shadow: 0.1em 0.1em 0 rgba(0, 0, 0, 0.09);
+}
+.chart-pie-legend-value {
+  float: right;
+  width: 20%;
+  text-align: right;
+  font-weight: normal;
+  color: #3D3D3D;
+}
+.chart-pie-legend-label {
+  margin-left: 1.7em;
+}
+.has-chart.dragging .drag-message {
+    opacity: 1;
+    z-index: 1;
+}
+.has-chart.dragging .chart-pie {
+    opacity: 0.1 !important;
+}

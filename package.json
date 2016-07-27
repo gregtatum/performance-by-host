@@ -1,0 +1,19 @@
+{
+  "name": "performance-by-host",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scripts.js",
+  "scripts": {
+    "dev": "budo src/index.js:bundle.js",
+    "build": "browserify src/index > bundle.js"
+  },
+  "author": "Greg Tatunm",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "browserify": "13.1.0",
+    "budo": "8.3.0",
+    "d3": "3.5.17",
+    "lerp": "1.0.3",
+    "lodash.template": "4.3.0"
+  }
+}
