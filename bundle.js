@@ -1,4 +1,70 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+exports.getText = function(url) {
+  return new Promise(function(resolve, reject) {
+    var req = new XMLHttpRequest()
+    req.responseType = "text"
+    req.addEventListener("load", function() {
+      if(this.status >= 200 && this.status < 300) {
+        resolve(this.response)
+      } else {
+        reject(this)
+      }
+    })
+    req.open("GET", url)
+    req.send()
+  })
+}
+
+exports.getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var req = new XMLHttpRequest()
+    req.responseType = "text"
+    req.addEventListener("load", function() {
+      if(this.status >= 200 && this.status < 300) {
+        try {
+          // Try parsing this ourselves, instead of using responseType "json".
+          // We can't detect the error in JSON if using the built-in.
+          resolve(JSON.parse(this.response))
+        } catch(error) {
+          reject(error)
+        }
+      } else {
+        reject(this)
+      }
+    })
+    req.open("GET", url)
+    req.send()
+  })
+}
+
+exports.getImageData = function(url) {
+  return new Promise(function(resolve, reject) {
+    var img = new Image()
+    img.addEventListener('load', () => {
+      var canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      var ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+      resolve(ctx.getImageData(0, 0, canvas.width, canvas.height))
+    })
+    img.addEventListener('error', reject)
+    img.src = url
+  })
+}
+
+exports.getImage = function(url) {
+  return new Promise(function(resolve, reject) {
+    var img = new Image()
+    img.addEventListener('load', () => {
+      resolve(img)
+    })
+    img.addEventListener('error', reject)
+    img.src = url
+  })
+}
+
+},{}],2:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.17"
@@ -9553,12 +9619,12 @@
   });
   if (typeof define === "function" && define.amd) this.d3 = d3, define(d3); else if (typeof module === "object" && module.exports) module.exports = d3; else this.d3 = d3;
 }();
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 function lerp(v0, v1, t) {
     return v0*(1-t)+v1*t
 }
 module.exports = lerp
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -9573,7 +9639,7 @@ var reInterpolate = /<%=([\s\S]+?)%>/g;
 
 module.exports = reInterpolate;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -10803,7 +10869,7 @@ var attempt = baseRest(function(func, args) {
 module.exports = template;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._reinterpolate":3,"lodash.templatesettings":5}],5:[function(require,module,exports){
+},{"lodash._reinterpolate":4,"lodash.templatesettings":6}],6:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -11087,7 +11153,7 @@ function escape(string) {
 module.exports = templateSettings;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._reinterpolate":3}],6:[function(require,module,exports){
+},{"lodash._reinterpolate":4}],7:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -11624,7 +11690,7 @@ module.exports = templateSettings;
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11710,7 +11776,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11797,13 +11863,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":7,"./encode":8}],10:[function(require,module,exports){
+},{"./decode":8,"./encode":9}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -12537,7 +12603,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":11,"punycode":6,"querystring":9}],11:[function(require,module,exports){
+},{"./util":12,"punycode":7,"querystring":10}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12555,12 +12621,14 @@ module.exports = {
   }
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 const parseProfile = require('./parse-profile')
 const pieChart = require('./pie-chart')
+const { getJSON } = require('@tatumcreative/get')
 
 function startDrag () {
   const dragEl = document.querySelector('.drag')
+  const defaultBtn = document.querySelector('.default-example')
   const dragMessageEl = dragEl.querySelector('.drag-message')
   const errorContainer = document.querySelector('.drag-error')
   const errorMessage = document.querySelector('.drag-error-message')
@@ -12572,15 +12640,35 @@ function startDrag () {
     dragEl.classList.remove('dragging')
     dragEl.classList.add('has-chart')
     destroyPreviousChart()
+    console.table(data)
     destroyPreviousChart = pieChart('.chart-pie', data)
+    defaultBtn.style.display = 'none'
   }
 
   if (localStorage.getItem('performance-data')) {
     try {
       const data = JSON.parse(localStorage.getItem('performance-data'))
+      console.table(data)
       handleNewData(data)
-    } catch(e) {}
+    } catch(e) {
+      console.error(e)
+    }
   }
+
+
+  defaultBtn.removeAttribute('disabled')
+  console.log(defaultBtn)
+  defaultBtn.addEventListener('click', (e) => {
+    defaultBtn.setAttribute('disabled', 'disabled')
+    defaultBtn.innerText = "Loading profile."
+
+    getJSON("/ads-profile.json").then(
+      (profile) => {
+        handleNewData(parseProfile(profile))
+      },
+      (error) => showError(error, 'Unable to load the default JSON file.')
+    )
+  }, true)
 
   dragEl.addEventListener('dragenter', (e) => {
     dragEl.classList.add('dragging')
@@ -12619,8 +12707,6 @@ function startDrag () {
       handleNewData(data)
     })
 
-
-
     function handleError (e) {
       showError(e, 'Your browser is unable to load that file.')
     }
@@ -12631,90 +12717,22 @@ function startDrag () {
   }, true)
 }
 
-function showErrorFn (errorMessage, errorContainer) {
+function showErrorFn (errorContainer, errorMessage) {
   return function showError (error, message) {
     errorMessage.innerText = message
     errorContainer.classList.add('show')
-    console.log(error)
+    console.error(error)
   }
 }
 
 module.exports = startDrag
 
-},{"./parse-profile":14,"./pie-chart":15}],13:[function(require,module,exports){
+},{"./parse-profile":15,"./pie-chart":16,"@tatumcreative/get":1}],14:[function(require,module,exports){
 const drag = require('./drag')
 
 drag()
-/*
-pieChart('.chart-pie', [
-  {
-    value: 1,
-    display: "Display 1",
-    label: "Label 1"
-  },
-  {
-    value: 2,
-    display: "Display 2",
-    label: "Label 2"
-  },
-  {
-    value: 3,
-    display: "Display 3",
-    label: "Label 3"
-  }
-])*/
 
-// const url = require('url')
-// const profile = require('./ads-profile')
-//
-// // Remove the 1 random blank frame
-// profile.frames.shift()
-//
-// var counts = countFramesByHost()
-// var entries = sortedEntries(counts)
-//
-// logTimeSpent(entries)
-//
-// function countFramesByHost () {
-//   const counts = {}
-//
-//   profile.frames.forEach(frame => {
-//     let host = url.parse(frame.source).host
-//     host = host ? host : `(${frame.source})`
-//     if (!counts[host]) {
-//       counts[host] = 0
-//     }
-//     counts[host] += 1
-//   })
-//
-//   return counts
-// }
-//
-// function sortedEntries(counts) {
-//   var entries = []
-//   for (var key in counts) {
-//     if (counts.hasOwnProperty(key)) {
-//       entries.push([key, counts[key]])
-//     }
-//   }
-//   entries.sort((a,b) => b[1] - a[1])
-//   return entries
-// }
-//
-// function logTimeSpent (entries) {
-//   const timeEachFrame = profile.frames.length / profile.duration
-//   console.log(`Host\tTime (ms)`)
-//   entries.forEach(([host, samples]) => {
-//     console.log(`${host}\t ${roundTo(samples * timeEachFrame, 3)}`)
-//   })
-// }
-//
-// function roundTo (n, digits) {
-//   const significance = Math.pow(10, digits)
-//   return Math.round(n * significance) / significance
-// }
-
-},{"./drag":12}],14:[function(require,module,exports){
+},{"./drag":13}],15:[function(require,module,exports){
 const url = require('url')
 
 function parseProfile (profile) {
@@ -12725,7 +12743,7 @@ function parseProfile (profile) {
   var entries = sortedEntries(counts)
 
   // logTimeSpent(profile, entries)
-
+  console.table(entries)
   return toD3DataStructure(entries)
 }
 
@@ -12779,7 +12797,7 @@ function roundTo (n, digits) {
   return Math.round(n * significance) / significance
 }
 
-},{"url":10}],15:[function(require,module,exports){
+},{"url":11}],16:[function(require,module,exports){
 var lerp = require('lerp')
 var d3 = require('d3')
 var template = require('lodash.template')
@@ -12831,7 +12849,7 @@ function createColorScaler (data) {
       lerp(min, max, 0.75),
       max
     ])
-    .range(['#fd684e', '#d7ca00', '#5ebf5b', '#61acc6'])
+    .range(['#46afe3', '#6b7abb', '#df80ff', '#eb5368'])
 }
 
 function createSvg ($scope, width, height) {
@@ -12858,6 +12876,7 @@ function addTransitionData (data) {
 }
 var origin = [0, 0];
 function createChartLabels (speed, data, svg, pieEnd) {
+  var minimumAngle = Math.PI * 0.03
   var labels = svg.datum(data).selectAll('text.chart-pie-text')
     .data(pieEnd.layout)
     .enter().append('text')
@@ -12866,11 +12885,20 @@ function createChartLabels (speed, data, svg, pieEnd) {
     .style('fill-opacity', 0)
     .style('pointer-events', 'none')
     .style('text-anchor', 'middle')
+    .style('font-size', function (d) {
+      const angleRatio = Math.min(1, (d.endAngle - d.startAngle) / (Math.PI / 2))
+      return Math.floor(50 + 50 * angleRatio) + "%"
+    })
     .attr('transform', function (d, i) {
       var pt = pieEnd.arc.centroid(d).map(p => p * (0.8 + 0.5 * i / data.length))
       return 'translate(' + pt + ')'
     })
-    .text(function (d) { return d.data.display || d.data.value })
+    .text(function (d) {
+      if (d.endAngle - d.startAngle > minimumAngle) {
+        return d.data.display || d.data.value
+      }
+      return ""
+    })
 
   return labels
 }
@@ -12906,37 +12934,47 @@ function tooltips (data, $scope, svg, chartPieces, pieEnd) {
     .style('text-anchor', 'middle')
     .style('pointer-events', 'none')
 
+  function indexOf (el) {
+    return Array.from(el.parentElement.childNodes).indexOf(el)
+  }
+
   function toggleLegendRowActive ($scope, el, active) {
-    var index = Array.from(el.parentElement.childNodes).indexOf(el) + 1
-    var row = $scope.select('.chart-pie-legend-row:nth-child(' + index + ')')
+    var index = indexOf(el)
+    var row = $scope.select('.chart-pie-legend-row:nth-child(' + (index + 1) + ')')
     row.classed('active', active)
   }
 
-  chartPieces.on('mouseenter', function () {
-    var $this = d3.select(this)
-    var datum = $this.data()[0]
+  function selectPieceFn (toggle) {
+    return function selectPiece () {
+      var $this = d3.select(this)
+      var datum = $this.data()[0]
 
-    tooltip
-      .attr('transform', 'translate(' + pieEnd.arc.centroid(datum) + ')')
-      .text(datum.data.label + ', ' + parseInt((datum.value / totalValue) * 100, 10) + '%')
+      toggleLegendRowActive($scope, this, toggle)
 
-    toggleLegendRowActive($scope, this, true)
+      $this.classed('active', toggle)
+    }
+  }
+  chartPieces.on('mouseenter', selectPieceFn(true))
+  chartPieces.on('mouseleave', selectPieceFn(false))
 
-    $this.classed('active', true)
-  })
 
-  chartPieces.on('mouseleave', function () {
-    var $this = d3.select(this)
-    datum = $this.data()[0]
+  function selectRowFn (toggle) {
+    return function select () {
+      var $row = d3.select(this)
+      var index = (indexOf(this) - 1) / 2
+      var chartPiece = chartPieces[0][index]
+      var $chartPiece = d3.select(chartPiece)
+      var datum = $chartPiece.data()[0]
 
-    tooltip
-      .attr('transform', 'translate(' + pieEnd.arc.centroid(datum) + ')')
-      .text(datum.data.label + ', ' + parseInt((datum.value / totalValue) * 100, 10) + '%')
+      toggleLegendRowActive($scope, chartPiece, toggle)
 
-    toggleLegendRowActive($scope, this, false)
-
-    $this.classed('active', false)
-  })
+      $chartPiece.classed('active', toggle)
+    }
+  }
+  const $rows = d3.selectAll('.chart-pie-legend-row')
+  console.log($rows)
+  $rows.on('mouseenter', selectRowFn(true))
+  $rows.on('mouseleave', selectRowFn(false))
 }
 
 function createChartPieces (data, svg, pieStart, pieEnd, colorScale) {
@@ -13016,4 +13054,4 @@ function arcTween (arc) {
   }
 }
 
-},{"d3":1,"lerp":2,"lodash.template":4}]},{},[13]);
+},{"d3":2,"lerp":3,"lodash.template":5}]},{},[14]);

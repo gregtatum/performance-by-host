@@ -134,37 +134,47 @@ function tooltips (data, $scope, svg, chartPieces, pieEnd) {
     .style('text-anchor', 'middle')
     .style('pointer-events', 'none')
 
+  function indexOf (el) {
+    return Array.from(el.parentElement.childNodes).indexOf(el)
+  }
+
   function toggleLegendRowActive ($scope, el, active) {
-    var index = Array.from(el.parentElement.childNodes).indexOf(el) + 1
-    var row = $scope.select('.chart-pie-legend-row:nth-child(' + index + ')')
+    var index = indexOf(el)
+    var row = $scope.select('.chart-pie-legend-row:nth-child(' + (index + 1) + ')')
     row.classed('active', active)
   }
 
-  chartPieces.on('mouseenter', function () {
-    var $this = d3.select(this)
-    var datum = $this.data()[0]
+  function selectPieceFn (toggle) {
+    return function selectPiece () {
+      var $this = d3.select(this)
+      var datum = $this.data()[0]
 
-    tooltip
-      .attr('transform', 'translate(' + pieEnd.arc.centroid(datum) + ')')
-      .text(datum.data.label + ', ' + parseInt((datum.value / totalValue) * 100, 10) + '%')
+      toggleLegendRowActive($scope, this, toggle)
 
-    toggleLegendRowActive($scope, this, true)
+      $this.classed('active', toggle)
+    }
+  }
+  chartPieces.on('mouseenter', selectPieceFn(true))
+  chartPieces.on('mouseleave', selectPieceFn(false))
 
-    $this.classed('active', true)
-  })
 
-  chartPieces.on('mouseleave', function () {
-    var $this = d3.select(this)
-    datum = $this.data()[0]
+  function selectRowFn (toggle) {
+    return function select () {
+      var $row = d3.select(this)
+      var index = (indexOf(this) - 1) / 2
+      var chartPiece = chartPieces[0][index]
+      var $chartPiece = d3.select(chartPiece)
+      var datum = $chartPiece.data()[0]
 
-    tooltip
-      .attr('transform', 'translate(' + pieEnd.arc.centroid(datum) + ')')
-      .text(datum.data.label + ', ' + parseInt((datum.value / totalValue) * 100, 10) + '%')
+      toggleLegendRowActive($scope, chartPiece, toggle)
 
-    toggleLegendRowActive($scope, this, false)
-
-    $this.classed('active', false)
-  })
+      $chartPiece.classed('active', toggle)
+    }
+  }
+  const $rows = d3.selectAll('.chart-pie-legend-row')
+  console.log($rows)
+  $rows.on('mouseenter', selectRowFn(true))
+  $rows.on('mouseleave', selectRowFn(false))
 }
 
 function createChartPieces (data, svg, pieStart, pieEnd, colorScale) {
