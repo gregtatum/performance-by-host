@@ -1,8 +1,10 @@
 const parseProfile = require('./parse-profile')
 const pieChart = require('./pie-chart')
+const { getJSON } = require('@tatumcreative/get')
 
 function startDrag () {
   const dragEl = document.querySelector('.drag')
+  const defaultBtn = document.querySelector('.default-example')
   const dragMessageEl = dragEl.querySelector('.drag-message')
   const errorContainer = document.querySelector('.drag-error')
   const errorMessage = document.querySelector('.drag-error-message')
@@ -14,15 +16,35 @@ function startDrag () {
     dragEl.classList.remove('dragging')
     dragEl.classList.add('has-chart')
     destroyPreviousChart()
+    console.table(data)
     destroyPreviousChart = pieChart('.chart-pie', data)
+    defaultBtn.style.display = 'none'
   }
 
   if (localStorage.getItem('performance-data')) {
     try {
       const data = JSON.parse(localStorage.getItem('performance-data'))
+      console.table(data)
       handleNewData(data)
-    } catch(e) {}
+    } catch(e) {
+      console.error(e)
+    }
   }
+
+
+  defaultBtn.removeAttribute('disabled')
+  console.log(defaultBtn)
+  defaultBtn.addEventListener('click', (e) => {
+    defaultBtn.setAttribute('disabled', 'disabled')
+    defaultBtn.innerText = "Loading profile."
+
+    getJSON("/ads-profile.json").then(
+      (profile) => {
+        handleNewData(parseProfile(profile))
+      },
+      (error) => showError(error, 'Unable to load the default JSON file.')
+    )
+  }, true)
 
   dragEl.addEventListener('dragenter', (e) => {
     dragEl.classList.add('dragging')
@@ -61,8 +83,6 @@ function startDrag () {
       handleNewData(data)
     })
 
-
-
     function handleError (e) {
       showError(e, 'Your browser is unable to load that file.')
     }
@@ -73,11 +93,11 @@ function startDrag () {
   }, true)
 }
 
-function showErrorFn (errorMessage, errorContainer) {
+function showErrorFn (errorContainer, errorMessage) {
   return function showError (error, message) {
     errorMessage.innerText = message
     errorContainer.classList.add('show')
-    console.log(error)
+    console.error(error)
   }
 }
 

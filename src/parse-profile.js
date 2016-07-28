@@ -8,7 +8,7 @@ function parseProfile (profile) {
   var entries = sortedEntries(counts)
 
   // logTimeSpent(profile, entries)
-
+  console.table(entries)
   return toD3DataStructure(entries)
 }
 

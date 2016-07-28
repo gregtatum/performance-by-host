@@ -49,7 +49,7 @@ function createColorScaler (data) {
       lerp(min, max, 0.75),
       max
     ])
-    .range(['#fd684e', '#d7ca00', '#5ebf5b', '#61acc6'])
+    .range(['#46afe3', '#6b7abb', '#df80ff', '#eb5368'])
 }
 
 function createSvg ($scope, width, height) {
@@ -76,6 +76,7 @@ function addTransitionData (data) {
 }
 var origin = [0, 0];
 function createChartLabels (speed, data, svg, pieEnd) {
+  var minimumAngle = Math.PI * 0.03
   var labels = svg.datum(data).selectAll('text.chart-pie-text')
     .data(pieEnd.layout)
     .enter().append('text')
@@ -84,11 +85,20 @@ function createChartLabels (speed, data, svg, pieEnd) {
     .style('fill-opacity', 0)
     .style('pointer-events', 'none')
     .style('text-anchor', 'middle')
+    .style('font-size', function (d) {
+      const angleRatio = Math.min(1, (d.endAngle - d.startAngle) / (Math.PI / 2))
+      return Math.floor(50 + 50 * angleRatio) + "%"
+    })
     .attr('transform', function (d, i) {
       var pt = pieEnd.arc.centroid(d).map(p => p * (0.8 + 0.5 * i / data.length))
       return 'translate(' + pt + ')'
     })
-    .text(function (d) { return d.data.display || d.data.value })
+    .text(function (d) {
+      if (d.endAngle - d.startAngle > minimumAngle) {
+        return d.data.display || d.data.value
+      }
+      return ""
+    })
 
   return labels
 }

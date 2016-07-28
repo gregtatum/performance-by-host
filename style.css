@@ -1,5 +1,7 @@
 body {
   font-family: sans-serif;
+	background-color:#14171a;
+	color: #8fa1b2;
 }
 
 .title {
@@ -9,7 +11,24 @@ body {
   margin:0;
   text-transform: uppercase;
 }
-
+.title img {
+	filter: invert(92%);
+	width: 0.9em;
+	position: relative;
+	top: -0.2em;
+	display: inline-block;
+	margin-bottom: -0.3em;
+}
+.default-example {
+	background: rgb(37, 46, 56);
+	border: 1px solid #000;
+	color: #8fa1b2;
+	padding: 0.6em;
+	cursor: pointer;
+}
+.default-example:active, .default-example:hover, .default-example:focus {
+	border-color: #8fa1b2;
+}
 /* Full Screen */
 .drag, .drag-message {
   position: absolute;
@@ -18,10 +37,13 @@ body {
   right: 0;
   bottom: 0;
 }
+h1, h2 {
+ color:	#a9bacb;
+}
 
 .drag-message {
   margin:1em;
-  border: 4px dashed rgba(76, 158, 217, 1);
+  border: 4px dashed #1d4f73;
   text-align:center;
   padding:10%;
   color: rgba(76, 158, 217, 1);
@@ -41,7 +63,7 @@ body {
 .drag-error {
   opacity: 0;
   transform: opacity 1000ms;
-  color: red;
+  color: #eb5368;
 }
 .show.drag-error {
   opacity: 1;
@@ -79,9 +101,12 @@ body {
   transform: scale(1.04);
   stroke-width: 5;
 }
+.chart-pie-legend {
+    font-size: 0.9em;
+}
 .chart-pie-legend-row {
   line-height: 1.2;
-  border: 1px solid #ddd;
+  border: 1px solid #2b3f53;
   border-left: 0;
   border-right: 0;
   padding: 0.6em 0;
@@ -89,7 +114,7 @@ body {
   transition: transform 200ms;
   margin-bottom:-1px;
   z-index:0;
-  position:relative
+  position:relative;
 }
 .chart-pie-legend-row.active {
   transform: scale(1.03);
@@ -118,4 +143,9 @@ body {
 }
 .has-chart.dragging .chart-pie {
     opacity: 0.1 !important;
+}
+.default-example[disabled] {
+  opacity: 0.5;
+  border: 1px solid rgb(37, 46, 56);
+  color: #8fa1b2b3;
 }
