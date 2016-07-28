@@ -38,7 +38,7 @@ function startDrag () {
     defaultBtn.setAttribute('disabled', 'disabled')
     defaultBtn.innerText = "Loading profile."
 
-    getJSON("/ads-profile.json").then(
+    getJSON("ads-profile.json").then(
       (profile) => {
         handleNewData(parseProfile(profile))
       },
